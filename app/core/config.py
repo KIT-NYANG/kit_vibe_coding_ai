@@ -10,8 +10,13 @@ class Settings(BaseSettings):
 
     # Summary
     openai_api_key: str
-    summary_model: str = "llama-3.3-70b-versatile"
+    summary_model: str = "meta-llama/llama-4-scout-17b-16e-instruct"
     summary_temperature: float = 0.2
+
+    #analysis
+    groq_api_key: str
+    llm_model: str = "meta-llama/llama-4-scout-17b-16e-instruct"
+    llm_temperature: float = 0.2
 
     model_config = SettingsConfigDict(
         env_file=".env",
