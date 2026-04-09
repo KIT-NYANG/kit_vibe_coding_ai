@@ -20,7 +20,8 @@ class SummaryService:
                 summary_text=result.get("summary_text", ""),
                 keywords=result.get("keywords", []),
             )
-        except Exception:
+        except Exception as e:
+            print(e)
             return SummarizeResponse(
                 summary_text="요약 생성 중 오류가 발생했습니다.",
                 keywords=[],
