@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import List, Optional
+from app.schemas.summary import SummarizeResponse
 
 
 class SegmentResponse(BaseModel):
@@ -14,3 +15,4 @@ class TranscriptionResponse(BaseModel):
     duration_sec: Optional[float] = None
     full_text: str
     segments: List[SegmentResponse]
+    summarize: Optional[SummarizeResponse] = None #stt 요약

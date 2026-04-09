@@ -2,10 +2,16 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
+    # STT
     model_size: str = "large-v3-turbo"
     device: str = "auto"
     compute_type: str = "float16"
     beam_size: int = 5
+
+    # Summary
+    openai_api_key: str
+    summary_model: str = "llama-3.3-70b-versatile"
+    summary_temperature: float = 0.2
 
     model_config = SettingsConfigDict(
         env_file=".env",
