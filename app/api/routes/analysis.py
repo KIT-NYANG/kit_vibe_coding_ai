@@ -9,10 +9,8 @@ router = APIRouter(prefix="/api/analysis", tags=["analysis"])
 async def aggregate_analysis(request: AggregateAnalysisRequest) -> AggregateAnalysisResponse:
     try:
         result = analysis_service.analyze_aggregate(
-            lecture_id=request.lecture_id,
-            candidate_ranges=[item.model_dump() for item in request.candidate_ranges],
-            full_text=request.full_text or "",
-            additional_prompt=request.additional_prompt or "",
+            candidate_ranges=request.candidateRanges,
+            segments=request.segments
         )
         return result
 
