@@ -25,28 +25,22 @@ class AnalysisService:
                 teacherGuides=[],
             )
 
-    def analyze_aggregate(self, lecture_id: int, candidate_ranges: list, full_text: str = "", additional_prompt: str = "") -> AggregateAnalysisResponse:
+    def analyze_aggregate(self, candidate_ranges: list, segments: list) -> AggregateAnalysisResponse:
         try:
             graph = analysis_graph_factory.get_graph("lecture_agg")
-            result = graph.invoke({
-                "lecture_id": lecture_id,
-                "candidate_ranges": candidate_ranges,
-                "full_text": full_text,
-                "additional_prompt": additional_prompt,
-            })
 
+            result = graph.invoke({
+                "candidate_ranges": candidate_ranges,
+                "segments": segments
+            })
             return AggregateAnalysisResponse(
-                lecture_id=lecture_id,
-                analyzed_log_count=len(candidate_ranges),
                 quizzes=result.get("quizzes", []),
-                teacher_guides=result.get("teacher_guides", []),
+                teacherGuides=result.get("teacherGuides", []),
             )
         except Exception:
             return AggregateAnalysisResponse(
-                lecture_id=lecture_id,
-                analyzed_log_count=len(candidate_ranges),
                 quizzes=[],
-                teacher_guides=[],
+                teacherGuides=[],
             )
 
 

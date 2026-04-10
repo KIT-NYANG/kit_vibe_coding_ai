@@ -39,13 +39,11 @@ class SegmentResponse(BaseModel):
 
 
 class AggregateAnalysisRequest(BaseModel):
-    lectureId: int
     candidateRanges: List[CandidateRange]
     segments: List[SegmentResponse] = Field(default_factory=list)
-    additionalPrompt: Optional[str] = None
+
 
 
 class AggregateAnalysisResponse(BaseModel):
-    lectureId: int
     quizzes: List[QuizItemResponse] = Field(default_factory=list)
     teacherGuides: List[TeacherGuideResponse] = Field(default_factory=list)

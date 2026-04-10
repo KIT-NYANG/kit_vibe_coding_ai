@@ -9,26 +9,39 @@ from app.services.analysis.prompts import LECTURE_AGG_ANALYSIS_SYSTEM_PROMPT
 llm = get_llm()
 
 
-def preprocess_node(state: AnalysisState) -> AnalysisState:
-    full_text = (state.get("full_text") or "").strip()
-    cleaned_text = " ".join(full_text.split())
-    return {"cleaned_text": cleaned_text}
-
-
 def analyze_node(state: AnalysisState) -> AnalysisState:
-    cleaned_text = state.get("cleaned_text", "")
-    candidate_ranges = state.get("candidate_ranges", [])
-    segments = state.get("segments", [])
+
+    candidate_ranges = state.get("candidate_ranges", []) or []
+    segments = state.get("segments", []) or []
+
+    # CandidateRange 객체 -> dict
+    candidate_range_dicts = [
+        {
+            "startSec": getattr(r, "startSec", None),
+            "endSec": getattr(r, "endSec", None),
+            "pauseCount": getattr(r, "pauseCount", 0),
+            "seekBackCount": getattr(r, "seekBackCount", 0),
+            "affectedUserCount": getattr(r, "affectedUserCount", 0),
+            "score": getattr(r, "score", 0),
+            "reasons": getattr(r, "reasons", []),
+        }
+        for r in candidate_ranges
+    ]
+
+    # SegmentResponse 객체 -> 문자열
+    segment_text = "\n".join(
+        f"{getattr(s, 'start', '')}~{getattr(s, 'end', '')} : {getattr(s, 'text', '').strip()}"
+        for s in segments
+        if getattr(s, "text", "").strip()
+    )
+
 
     human_text = f"""
 candidateRanges:
-{json.dumps(candidate_ranges, ensure_ascii=False)}
+{json.dumps(candidate_range_dicts, ensure_ascii=False)}
 
 segments:
-{json.dumps(segments, ensure_ascii=False)}
-
-relatedText:
-{cleaned_text}
+{segment_text}
 """
 
     messages = [
@@ -37,6 +50,7 @@ relatedText:
     ]
 
     response = llm.invoke(messages)
+
     return {"llm_response": response.content}
 
 
@@ -74,7 +88,18 @@ def parse_node(state: AnalysisState) -> AnalysisState:
     raw = state.get("llm_response", "")
 
     try:
-        data = json.loads(raw)
+        cleaned = raw.strip()
+
+        if cleaned.startswith("```json"):
+            cleaned = cleaned[len("```json"):].strip()
+        elif cleaned.startswith("```"):
+            cleaned = cleaned[len("```"):].strip()
+
+        if cleaned.endswith("```"):
+            cleaned = cleaned[:-3].strip()
+
+        data = json.loads(cleaned)
+
         quizzes = data.get("quizzes", [])
         teacher_guides = data.get("teacherGuides", data.get("teacher_guides", []))
 
@@ -88,23 +113,23 @@ def parse_node(state: AnalysisState) -> AnalysisState:
 
         return {
             "quizzes": quizzes[:3],
-            "teacher_guides": teacher_guides[:3],
+            "teacherGuides": teacher_guides[:3],  # 여기 중요
         }
-    except Exception:
+    except Exception as e:
+        print(f"parse error: {type(e).__name__}: {e}")
+        print(raw)
         return {
             "quizzes": [],
-            "teacher_guides": [],
+            "teacherGuides": [],
         }
 
 
 def build_lecture_agg_graph():
     graph = StateGraph(AnalysisState)
-    graph.add_node("preprocess", preprocess_node)
     graph.add_node("analyze", analyze_node)
     graph.add_node("parse", parse_node)
 
-    graph.set_entry_point("preprocess")
-    graph.add_edge("preprocess", "analyze")
+    graph.set_entry_point("analyze")
     graph.add_edge("analyze", "parse")
     graph.add_edge("parse", END)
 

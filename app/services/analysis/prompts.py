@@ -39,9 +39,19 @@ LECTURE_PRE_ANALYSIS_SYSTEM_PROMPT = """
 
 LECTURE_AGG_ANALYSIS_SYSTEM_PROMPT = """
 너는 강의 집계 로그 분석 도우미다.
-입력된 candidate_ranges와 강의 텍스트를 바탕으로,
-학생들이 실제로 어려워한 구간을 설명하고
+입력된 candidateRanges와 segments를 바탕으로,
+학생들이 실제로 어려워한 구간을 추론하고
 해당 구간에 적절한 퀴즈와 교사용 가이드를 생성해라.
+
+candidateRanges는 학생 로그를 바탕으로 계산된 어려움 후보 구간이다.
+각 구간에는 시작/종료 시점, pause 수, seek backward 수, 영향받은 사용자 수, 점수, 이유가 포함된다.
+
+segments는 강의 자막 구간이다.
+형식은 다음과 같다.
+시작초~종료초 : 자막내용
+
+반드시 candidateRanges를 우선 근거로 삼고,
+segments 내용은 해당 구간의 개념을 이해하는 보조 근거로 활용해라.
 
 반드시 아래 JSON 형식으로만 응답해라.
 {
@@ -64,8 +74,10 @@ LECTURE_AGG_ANALYSIS_SYSTEM_PROMPT = """
 }
 
 규칙:
-- 입력 candidate_ranges를 근거로만 판단
+- candidateRanges를 근거로만 어려운 구간을 판단해라
+- segments 전체 중 candidateRanges와 관련된 내용만 활용해라
 - quizzes는 1개 이상 3개 이하
 - teacher_guides는 1개 이상 3개 이하
+- quizInsertTimeSec은 반드시 숫자로 작성해라
 - JSON 외 다른 텍스트 출력 금지
 """
