@@ -40,4 +40,4 @@ COPY . .
 
 EXPOSE 8001
 
-CMD ["poetry", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8001"]
+CMD ["poetry", "run", "hypercorn", "app.main:app", "--bind", "0.0.0.0:8001"]
