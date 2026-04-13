@@ -42,50 +42,10 @@ NYANG AI는 AI 기반 학습 경험 개선을 위한 LMS 분석 서버입니다.
 - FFmpeg
 - FFprobe
 
-### Infra
-- Docker
-- Google Cloud Run
-- Google Cloud Storage
-
-### Database / External
-- PostgreSQL
-- NeonDB
-
 ---
 
-## 4. Architecture
-<p align="center">
-  <img src="docs/archi.png" alt="Architecture" width="800"/>
-</p>
-NYANG AI는 Spring Boot Backend와 연동되는 독립형 AI 서버로, 강의 영상과 시청 로그를 입력받아 STT, 요약, Pre Analysis, Aggregate Analysis를 수행한 뒤 결과를 반환합니다.
 
-Frontend  
-↓  
-Spring Boot Backend  
-├── 강의 / 강좌 관리  
-├── 영상 업로드 및 메타데이터 저장  
-├── 시청 로그 수집 및 세션 집계  
-├── 마지막 시청 위치 관리  
-└── AI 서버 연동
-
-Spring Boot Backend  
-├─→ Database  
-│   ├── 강의 정보 저장  
-│   ├── 자막 / 세그먼트 저장  
-│   ├── 시청 로그 및 세션 데이터 저장  
-│   └── 분석 결과 저장  
-│
-└─→ NYANG AI  
-├── 전체 자막 생성  
-├── 세그먼트 생성  
-├── 강의 요약 생성  
-├── 핵심 키워드 추출  
-├── Pre Analysis 수행  
-└── Aggregate Analysis 수행
-
----
-
-## 5. 디렉토리 구조
+## 4. 디렉토리 구조
 
 app/  
 ├── api/         # FastAPI 라우터 정의, 엔드포인트 요청/응답 연결  
@@ -97,7 +57,7 @@ app/
 
 ---
 
-## 6. 분석 종류
+## 5. 분석 종류
 
 1. 영상 업로드
     - 사용자가 강의 영상 파일을 업로드합니다.
@@ -122,7 +82,7 @@ app/
 
 ---
 
-## 7. 엔드포인트
+## 6. 엔드포인트
 
 ### 1) STT 변환 및 사전 분석
 - `POST /api/stt/transcribe-and-pre-analyze`
@@ -171,7 +131,7 @@ app/
 
 ---
 
-## 8. 실행 방법
+## 7. 실행 방법
 
 ### 1. 저장소 클론
 git clone https://github.com/KIT-NYANG/kit_vibe_coding_ai.git
@@ -198,5 +158,5 @@ Docs: http://localhost:8001/docs
 
 ---
 
-## 9. 한 줄 소개
+## 8. 한 줄 소개
 강의 내용과 실제 학습 행동 데이터를 함께 분석해 더 나은 학습 경험을 만드는 AI 기반 LMS 분석 서버입니다.
