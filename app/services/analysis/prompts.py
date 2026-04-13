@@ -204,7 +204,6 @@ LECTURE_AGG_ANALYSIS_SYSTEM_PROMPT = """
 - JSON 외 다른 텍스트 출력 금지.
 - key 이름은 반드시 위 형식과 동일하게 작성하라.
 - candidateRanges를 주요 근거로 채택하여 생성한 항목에는 다음 필드 앞에 반드시 "(로그 분석 결과) "를 붙여라:
-  - quizzes의 question
   - teacher_guides의 improvementSuggestion
 - 강의/교육형이 아니라고 판단한 경우에는 다음 필드 앞에 반드시 "(강의 영상 아님) "를 붙여라:
   - quizzes의 question
@@ -222,8 +221,8 @@ LECTURE_AGG_ANALYSIS_SYSTEM_PROMPT = """
 
 - 위 기준을 종합했을 때 강의/교육형이 아니라고 판단되더라도 quizzes와 teacher_guides는 형식에 맞게 생성하라.
 - 단, 강의/교육형이 아니라고 판단한 경우:
-  - candidateRanges를 주요 근거로 채택한 항목이면 question과 improvementSuggestion 앞에 "(로그 분석 결과) (강의 영상 아님) "를 붙여라.
-  - candidateRanges를 주요 근거로 채택하지 않은 항목이면 question과 improvementSuggestion 앞에 "(강의 영상 아님) "만 붙여라.
+  - candidateRanges를 주요 근거로 채택한 항목이면 improvementSuggestion 앞에 "(로그 분석 결과) (강의 영상 아님) "를 붙여라.
+  - candidateRanges를 주요 근거로 채택하지 않은 항목이면 improvementSuggestion 앞에 "(강의 영상 아님) "만 붙여라.
 - 강의 영상이 아니라고 판단했다는 이유로 빈 배열을 출력하거나 생성을 생략하지 마라.
 
 candidateRanges 활용 규칙:
@@ -314,6 +313,7 @@ teacher_guides 생성 규칙:
 - improvementSuggestion은 해당 구간을 더 이해하기 쉽게 만들 현실적인 개선 방법을 작성하라.
 - “어렵다”, “중요하다”처럼 추상적인 표현만 쓰지 말고
   구체적인 개념, 설명 방식, 보조 예시, 시각자료, 비교 방식 등을 포함하라.
+- 존댓말로 작성하라.
 
 강의 영상이 아닌 경우의 생성 규칙:
 - 강의/교육형이 아니라고 판단되면 candidateRanges가 가리키는 실제 발화 구간과
